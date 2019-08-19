@@ -4,7 +4,7 @@ const app = express();
 
 app.get('/', (req, res) => {
   let strings = []
-  for (let i = 0;i<=50;i++) {
+  for (let i = 1;i<=50;i++) {
     strings.push(`<p>${i} ${i%2 ? 'Soy Impar!' : 'Soy Par!'}!</p>`) 
   }
   res.send(`${strings.map(e=>e)}`);
