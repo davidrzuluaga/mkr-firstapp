@@ -6,14 +6,15 @@ app.set('views', 'views');
 app.use(express.urlencoded());
 
 app.get('/', (req, res) => {
-  res.render("index");
+  res.send(req.header('User-Agent'));
 });
 
-app.post('/', (req, res) => {
+app.get('/form', (req, res) => {
+  res.render("form");
+});
+
+app.post('/form', (req, res) => {
   let name = req.body.name
-  console.log(req.body)
-  console.log(req.params)
-  console.log(req.query)
   res.render("result",{name});
 });
 
