@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
   return visitor
   .save()
   .then((visitor) => {
-    return res.status(201).send("<h1>El visitante fue almacenado con éxito</h1>");
+    return res.send("<h1>El visitante fue almacenado con éxito</h1>");
   })
   .catch((error) => {
     res.status(500).json('Server error. Please try again.');
