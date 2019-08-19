@@ -1,13 +1,13 @@
 const express = require('express');
 const app = express();
 
-function capitalizeFirstLetter(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
 
-app.get('/makers/:nombre', (req, res) => {
-  const nombre = req.params.nombre || 'desconocido'
-  res.send(`<h1>Hola ${capitalizeFirstLetter(nombre)}!</h1>`);
+app.get('/', (req, res) => {
+  let strings = []
+  for (let i = 0;i<=50;i++) {
+    strings.push(`<p>${i} ${i%2 ? 'Soy Impar!' : 'Soy Par!'}!</p>`) 
+  }
+  res.send(`${strings.map(e=>e)}`);
 });
 
 app.listen(3000, () => console.log('Listening on port 3000!'));
