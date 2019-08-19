@@ -1,6 +1,9 @@
 html
   head
-    title Pares e impares
+    title Salúdame 3
   body
-    each string in strings
-      p= string
+    form(method='POST' action='/')
+        div.form-group
+          label(for='name') Name:
+          input#name.form-control(type='text', placeholder='name' name='name')
+        button.btn.btn-primary(type='submit') Enviar
