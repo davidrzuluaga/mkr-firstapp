@@ -9,7 +9,7 @@ app.get('/', (req, res) => {
 });
 
 app.post('/', (req, res) => {
-  let name = 's'// req.body.name
+  let name = req.body.name
   console.log(req.body)
   console.log(req.params)
   console.log(req.query)
