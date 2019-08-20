@@ -15,6 +15,14 @@ mongoose.connect(process.env.MONGODB_URL || 'mongodb://localhost:27017/mongo-1',
   console.log('Error connecting to database');
 });
 
+Object.defineProperty(Array.prototype, 'flat', {
+  value: function(depth = 1) {
+    return this.reduce(function (flat, toFlatten) {
+      return flat.concat((Array.isArray(toFlatten) && (depth>1)) ? toFlatten.flat(depth-1) : toFlatten);
+    }, []);
+  }
+});
+
 const visitorSchema = new mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
   name: {
@@ -53,8 +61,9 @@ app.get('/', (req, res) => {
     function showAllVisits(newVisitor) {
       Visitor.find()
       .then((visitor) => {
-        visitor = newVisitor ? [...newVisitor, ...visitor] : [...visitor]
-        res.render("visits", { visitor });
+        let visits
+        newVisitor ? visits = [newVisitor, visitor].flat() : visits = visitor
+        res.render("visits", { visits });
       })
     }
   }
