@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 
 app.set('view engine', 'pug');
 app.set('views', 'views');
+
 app.use(express.urlencoded());
 
 mongoose.connect(process.env.MONGODB_URL || 'mongodb://localhost:27017/mongo-1', { useNewUrlParser: true })
@@ -28,7 +29,6 @@ const visitorSchema = new mongoose.Schema({
 const Visitor = mongoose.model('Visitor', visitorSchema);
 
 app.get('/', (req, res) => {
-
   async function createVisitor() {
     let existentVisitor
     if (req.query.name) {
@@ -36,6 +36,7 @@ app.get('/', (req, res) => {
     } else {
       await Visitor.create({ _id: mongoose.Types.ObjectId(), name: "Anónimo", visits: "1" }, function(err, visitor) {
         if (err) return console.error(err);
+        showAllVisits()
       });
     }
     if (existentVisitor) {
@@ -43,7 +44,7 @@ app.get('/', (req, res) => {
         if (err) return console.error(err);
         showAllVisits()
       });
-    } else {
+    } else if (req.query.name) {
       await Visitor.create({_id: mongoose.Types.ObjectId(), name: req.query.name, visits: "1" }, function(err, newVisitor) {
         if (err) return console.error(err);
         showAllVisits(newVisitor)
