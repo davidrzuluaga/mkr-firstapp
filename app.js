@@ -20,7 +20,7 @@ const visitorSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  date: {
+  visits: {
     type: String,
     required: true,
   }
@@ -28,20 +28,33 @@ const visitorSchema = new mongoose.Schema({
 const Visitor = mongoose.model('Visitor', visitorSchema);
 
 app.get('/', (req, res) => {
-  const visitor = new Visitor({
-    _id: mongoose.Types.ObjectId(),
-    name: req.query.name || 'Anónimo',
-    date: new Date()
-  });
-  
-  return visitor
-  .save()
-  .then((visitor) => {
-    return res.send("<h1>El visitante fue almacenado con éxito</h1>");
-  })
-  .catch((error) => {
-    res.status(500).json('Server error. Please try again.');
-  });
+
+  async function createVisitor() {
+    let existentVisitor
+    if (req.query.name) {
+      existentVisitor = await Visitor.findOne({name: req.query.name})
+    } else {
+      await Visitor.create({ _id: mongoose.Types.ObjectId(), name: "Anónimo", visits: "1" }, function(err) {
+        if (err) return console.error(err);
+      });
+    }
+    if (existentVisitor) {
+      await Visitor.update({name: req.query.name}, { visits: parseInt(existentVisitor.visits) + 1 }, function(err) {
+        if (err) return console.error(err);
+      });
+    } else {
+      await Visitor.create({ _id: mongoose.Types.ObjectId(), name: req.query.name, visits: "1" }, function(err) {
+        if (err) return console.error(err);
+      });
+    }
+    await Visitor.find()
+      .then((visitor) => {
+        console.log({visitor})
+        console.log({existentVisitor})
+        res.render("visits", { visitor });
+      })
+  }
+  createVisitor()
 });
 
 

@@ -1,0 +1,16 @@
+html
+  head
+    title Pares e impares
+  body
+    main
+        .container              
+        table.table
+            tr
+                th id
+                th Name
+                th Visits
+            each visit in visitor
+                tr
+                    td #{visit._id}
+                    td #{visit.name}
+                    td #{visit.visits}
