@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
-import Visitor from "./models/Visitor.js";
 
 app.set('view engine', 'pug');
 app.set('views', 'views');
@@ -14,6 +13,19 @@ mongoose.connect(process.env.MONGODB_URL || 'mongodb://localhost:27017/mongo-1',
 .catch((error)=> {
   console.log('Error connecting to database');
 });
+
+const visitorSchema = new mongoose.Schema({
+  _id: mongoose.Schema.Types.ObjectId,
+  name: {
+    type: String,
+    required: true,
+  },
+  date: {
+    type: String,
+    required: true,
+  }
+});
+mongoose.model('Visitor', visitorSchema);
 
 app.get('/', (req, res) => {
   const visitor = new Visitor({
