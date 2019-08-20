@@ -50,10 +50,11 @@ app.get('/', (req, res) => {
         showAllVisits(newVisitor)
       });
     }
-    function showAllVisits(newVisitor = {}) {
+    function showAllVisits(newVisitor) {
       Visitor.find()
       .then((visitor) => {
-        res.render("visits", { visitor: [...newVisitor, ...visitor] });
+        visitor = newVisitor ? [...newVisitor, ...visitor] : [...visitor]
+        res.render("visits", { visitor });
       })
     }
   }
