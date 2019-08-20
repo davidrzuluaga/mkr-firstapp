@@ -1,13 +1,19 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
-
+import Visitor from "./models/Visitor.js";
 
 app.set('view engine', 'pug');
 app.set('views', 'views');
 app.use(express.urlencoded());
 
-mongoose.connect(process.env.MONGODB_URL || 'mongodb://localhost:27017/mongo-1', { useNewUrlParser: true });
+mongoose.connect(process.env.MONGODB_URL || 'mongodb://localhost:27017/mongo-1', { useNewUrlParser: true })
+.then(()=> {
+  console.log('Database connected');
+})
+.catch((error)=> {
+  console.log('Error connecting to database');
+});
 
 app.get('/', (req, res) => {
   const visitor = new Visitor({
