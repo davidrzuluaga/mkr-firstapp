@@ -25,7 +25,7 @@ const visitorSchema = new mongoose.Schema({
     required: true,
   }
 });
-mongoose.model('Visitor', visitorSchema);
+const Visitor = mongoose.model('Visitor', visitorSchema);
 
 app.get('/', (req, res) => {
   const visitor = new Visitor({
