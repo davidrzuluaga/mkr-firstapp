@@ -34,28 +34,35 @@ app.get('/', (req, res) => {
     if (req.query.name) {
       existentVisitor = await Visitor.findOne({name: req.query.name})
     } else {
-      await Visitor.create({ _id: mongoose.Types.ObjectId(), name: "Anónimo", visits: "1" }, function(err) {
+      await Visitor.create({ _id: mongoose.Types.ObjectId(), name: "Anónimo", visits: "1" }, function(err, visitor) {
         if (err) return console.error(err);
       });
     }
     if (existentVisitor) {
-      await Visitor.update({name: req.query.name}, { visits: parseInt(existentVisitor.visits) + 1 }, function(err) {
+      await Visitor.updateOne({name: req.query.name}, { visits: parseInt(existentVisitor.visits) + 1 }, function(err) {
         if (err) return console.error(err);
+        showAllVisits()
       });
     } else {
-      await Visitor.create({ _id: mongoose.Types.ObjectId(), name: req.query.name, visits: "1" }, function(err) {
+      await Visitor.create({_id: mongoose.Types.ObjectId(), name: req.query.name, visits: "1" }, function(err, newVisitor) {
         if (err) return console.error(err);
+        showAllVisits(newVisitor)
       });
     }
-    await Visitor.find()
+    function showAllVisits(newVisitor = {}) {
+      Visitor.find()
       .then((visitor) => {
-        console.log({visitor})
-        console.log({existentVisitor})
-        res.render("visits", { visitor });
+        res.render("visits", { visitor: [...newVisitor, ...visitor] });
       })
+    }
   }
   createVisitor()
 });
 
-
+app.get('/deleteall', (req, res) => {
+  Visitor.deleteMany()
+  .then((visitor) => {
+    res.send("Deleted");
+  })
+});
 app.listen(3000, () => console.log('Listening on port 3000!'));
