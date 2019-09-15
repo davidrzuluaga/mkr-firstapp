@@ -1,19 +1,16 @@
 html
   head
-    title new user
+    title login
   body
     main     
-        form(method='POST' action='/register')
-          div.form-group
-            label(for='name') Name:
-            input#name.form-control(type='text', placeholder='first and last' name='name')
+        form(method='POST' action='/login')
           div.form-group
             label(for='email') Email:
             input#email.form-control(type='email', placeholder='name@email.com' name='email')
           div.form-group
             label(for='password') Password:
             input#password.form-control(type='password', name='password')
-          button.btn.btn-primary(type='submit') Sign up
+          button.btn.btn-primary(type='submit') Login
     if msgs
         each msg in msgs
             p #{msg.msg}
