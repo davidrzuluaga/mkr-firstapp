@@ -2,68 +2,72 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 
+require('dotenv').config();
+
 app.set('view engine', 'pug');
-app.set('views', 'views');
+app.set('users', 'users');
+app.set('newuser', 'newuser');
 
 app.use(express.urlencoded());
 
-mongoose.connect(process.env.MONGODB_URL || 'mongodb://localhost:27017/mongo-1', { useNewUrlParser: true })
-.then(()=> {
-  console.log('Database connected');
-})
-.catch((error)=> {
-  console.log('Error connecting to database');
-});
+mongoose
+  .connect(process.env.MONGODB_URL || 'mongodb://localhost:27017/mongo-1', {
+    useNewUrlParser: true
+  })
+  .then(() => {
+    console.log('Database connected');
+  })
+  .catch(error => {
+    console.log('Error connecting to database');
+  });
 
-const visitorSchema = new mongoose.Schema({
+const usersSchema = new mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
   name: {
     type: String,
-    required: true,
+    required: true
   },
-  visits: {
+  email: {
     type: String,
-    required: true,
+    required: true
+  },
+  password: {
+    type: String,
+    required: true
   }
 });
-const Visitor = mongoose.model('Visitor', visitorSchema);
+const Users = mongoose.model('Users', usersSchema);
 
 app.get('/', (req, res) => {
-  async function createVisitor() {
-    let existentVisitor
-    if (req.query.name) {
-      existentVisitor = await Visitor.findOne({name: req.query.name})
-    } else {
-      await Visitor.create({ _id: mongoose.Types.ObjectId(), name: "Anónimo", visits: "1" }, function(err, visitor) {
-        if (err) return console.error(err);
-        showAllVisits()
-      });
-    }
-    if (existentVisitor) {
-      await Visitor.updateOne({name: req.query.name}, { visits: parseInt(existentVisitor.visits) + 1 }, function(err) {
-        if (err) return console.error(err);
-        showAllVisits()
-      });
-    } else if (req.query.name) {
-      await Visitor.create({_id: mongoose.Types.ObjectId(), name: req.query.name, visits: "1" }, function(err, newVisitor) {
-        if (err) return console.error(err);
-        showAllVisits(newVisitor)
-      });
-    }
-    function showAllVisits(newVisitor = []) {
-      Visitor.find()
-      .then((visitor) => {
-        res.render("visits", { visits: visitor });
-      })
-    }
+  let user;
+  async function showAllUsers() {
+    user = await Users.find();
+    res.render('users', { users: user });
   }
-  createVisitor()
+  showAllUsers();
 });
 
-app.get('/deleteall', (req, res) => {
-  Visitor.deleteMany()
-  .then((visitor) => {
-    res.send("Deleted");
-  })
+app.get('/register', (req, res) => {
+  res.render('newuser');
 });
+
+app.post('/register', (req, res) => {
+  const { name, email, password } = req.body;
+  async function createUser() {
+    if (name && email && password) {
+      console.log(name, email, password);
+      await Users.create(
+        { _id: mongoose.Types.ObjectId(), name, email, password },
+        function(err) {
+          if (err) return console.error(err);
+        }
+      );
+      res.redirect('/');
+    } else {
+      res.render('newuser', { msg: 'Bad Request' });
+    }
+  }
+  createUser();
+});
+
 app.listen(3000, () => console.log('Listening on port 3000!'));

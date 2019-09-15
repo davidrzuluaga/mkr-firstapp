@@ -1,0 +1,14 @@
+html
+  head
+    title users
+  body
+    main
+        .container              
+        table.table
+            thead
+                th Name
+                th email
+            each user in users
+                tr
+                    td #{user.name}
+                    td #{user.email}
