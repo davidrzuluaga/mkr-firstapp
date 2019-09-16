@@ -40,6 +40,28 @@ const usersSchema = new mongoose.Schema({
 });
 const Users = mongoose.model('Users', usersSchema);
 
+const productsSchema = new mongoose.Schema({
+  _id: mongoose.Schema.Types.ObjectId,
+  name: {
+    type: String,
+    required: true
+  },
+  price: {
+    type: String,
+    required: true
+  }
+});
+const Products = mongoose.model('Products', productsSchema);
+
+app.get('/products', (req, res) => {
+  let product;
+  async function showAllProducts() {
+    product = await Products.find();
+    res.json(product);
+  }
+  showAllProducts();
+});
+
 app.get('/', (req, res) => {
   let user;
   async function showAllUsers() {
