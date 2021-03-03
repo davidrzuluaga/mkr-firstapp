@@ -20,6 +20,6 @@
     "mongoose": "^5.7.5"
   },
   "devDependencies": {
-    "pug": "^2.0.4"
+    "pug": "^3.0.1"
   }
 }
